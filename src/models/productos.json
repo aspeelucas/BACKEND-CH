@@ -1,0 +1,92 @@
+[
+	{
+		"title": "Lenovo",
+		"price": 2000,
+		"description": "pc portatil",
+		"thumbnail": "http:zzz",
+		"code": 123,
+		"stock": 10,
+		"id": 1
+	},
+	{
+		"title": "Samsung",
+		"price": 1000,
+		"description": "celular",
+		"thumbnail": "http:zzz",
+		"code": 124,
+		"stock": 11,
+		"id": 2
+	},
+	{
+		"title": "Ipad",
+		"price": 1500,
+		"description": "tablet",
+		"thumbnail": "http:zzz",
+		"code": 125,
+		"stock": 12,
+		"id": 3
+	},
+	{
+		"title": "Motorola",
+		"price": 1000,
+		"description": "celular",
+		"thumbnail": "http:zzz",
+		"code": 127,
+		"stock": 14,
+		"id": 4
+	},
+	{
+		"title": "Samsung",
+		"price": 1000,
+		"description": "galaxy",
+		"thumbnail": "http:zzz",
+		"code": 128,
+		"stock": 15,
+		"id": 5
+	},
+	{
+		"title": "LG",
+		"price": 1000,
+		"description": "lavarropa",
+		"thumbnail": "http:zzz",
+		"code": 129,
+		"stock": 16,
+		"id": 6
+	},
+	{
+		"title": "Sony",
+		"price": 1000,
+		"description": "televisor",
+		"thumbnail": "http:zzz",
+		"code": 130,
+		"stock": 17,
+		"id": 7
+	},
+	{
+		"title": "Philips",
+		"price": 1000,
+		"description": "televisor",
+		"thumbnail": "http:zzz",
+		"code": 131,
+		"stock": 18,
+		"id": 8
+	},
+	{
+		"title": "Hitachi",
+		"price": 1000,
+		"description": "televisor",
+		"thumbnail": "http:zzz",
+		"code": 132,
+		"stock": 19,
+		"id": 9
+	},
+	{
+		"title": "Noblex",
+		"price": 1000,
+		"description": "televisor",
+		"thumbnail": "http:zzz",
+		"code": 133,
+		"stock": 20,
+		"id": 10
+	}
+]
