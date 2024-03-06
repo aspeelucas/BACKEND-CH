@@ -45,6 +45,14 @@ io.on("connection", async (socket) => {
     }
   })
 
+  socket.on("delete-product", async (id) => {
+    try {
+      await productManger.deleteProduct(id);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
   socket.emit("allProducts", await productManger.getProducts());
 });
 

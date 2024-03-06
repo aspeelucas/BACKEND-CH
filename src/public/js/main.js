@@ -16,7 +16,10 @@ socket.on('allProducts',  (data) => {
         <p>Code: ${product.code} </p>
         <p>Stock : ${product.stock} </p>
         <p>Status : ${product.status} </p>
-        <p>Id : ${product.id}</p>  
+        <p>Id : ${product.id}</p>
+        <button onclick=" 
+        socket.emit('delete-product', ${product.id})
+        ">Eliminar</button>
         </div>
         `
     });
