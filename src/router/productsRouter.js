@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { ProductManager } from "../controllers/product-manager.js";
+import { ProductManager } from "../controllers/products-manager.js";
 
-const productManger = new ProductManager("./src/models/productos.json");
+const productManger = new ProductManager();
 
 export const productsRouter = Router();
 
@@ -21,7 +21,7 @@ productsRouter.get("/", async (req, res) => {
 productsRouter.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    const product = await productManger.getProductById(parseInt(pid));
+    const product = await productManger.getProductById(pid);
     if (product) {
       return res.json(product);
     }
@@ -32,19 +32,21 @@ productsRouter.get("/:pid", async (req, res) => {
 });
 
 productsRouter.post("/", async (req, res) => {
+  const product = req.body;
   try {
-    const product = req.body;
     const newProduct = await productManger.addProduct(product);
-    return res.json(newProduct);
+    return res.json({ message: "Producto agregado con exito", newProduct });
   } catch (error) {
-    res.status(500).json({ error: "Error interno del servidor" });
+    res
+      .status(500)
+      .json({ error: "Error interno del servidor", reason: error.message });
   }
 });
 
 productsRouter.put("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    const currentProduct = await productManger.getProductById(parseInt(pid));
+    const currentProduct = await productManger.getProductById(pid);
     if (!currentProduct) {
       throw new Error("Producto no encontrado");
     }
@@ -63,20 +65,27 @@ productsRouter.put("/:pid", async (req, res) => {
       throw new Error("Faltan campos obligatorios");
     }
 
-    await productManger.udpateProduct(Number(pid), productUpdate);
-    return res.json(productUpdate);
+    await productManger.udpateProduct(pid, productUpdate);
+    return res.json({
+      message: "Producto actualizado con exito",
+      productUpdate,
+    });
   } catch (error) {
     return res.status(404).json({ error: error.message });
   }
 });
 
+
+
 productsRouter.delete("/:pid", async (req, res) => {
   const { pid } = req.params;
-  const productIdFound = await productManger.getProductById(Number(pid));
-
-  if (productIdFound) {
-    await productManger.deleteProduct(Number(pid));
-    return res.json(productIdFound);
+  try {
+    await productManger.getProductById(pid);
+    await productManger.deleteProduct(pid);
+    return res.json({ message: "Producto eliminado con exito" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Error interno del servidor", reason: error.message });
   }
-  return res.status(404).json({ error: "El producto solicitado no existe" });
 });

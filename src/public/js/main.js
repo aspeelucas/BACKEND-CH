@@ -16,9 +16,9 @@ socket.on('allProducts',  (data) => {
         <p>Code: ${product.code} </p>
         <p>Stock : ${product.stock} </p>
         <p>Status : ${product.status} </p>
-        <p>Id : ${product.id}</p>
+        <p>Id : ${product._id}</p>
         <button onclick=" 
-        socket.emit('delete-product', ${product.id})
+        socket.emit('delete-product', ${product._id})
         ">Eliminar</button>
         </div>
         `
@@ -35,6 +35,7 @@ form.addEventListener('submit', event => {
         title: dataForm.get('title'),
         price: Number (dataForm.get('price')),
         description: dataForm.get('description'),
+        category: dataForm.get('category'),
         thumbnail: dataForm.get('thumbnail'),
         code: Number (dataForm.get('code')),
         stock: Number (dataForm.get('stock')),
@@ -45,3 +46,5 @@ form.addEventListener('submit', event => {
     
     form.reset();
     });
+
+

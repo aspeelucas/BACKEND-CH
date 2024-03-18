@@ -4,14 +4,18 @@ import { Server } from "socket.io";
 import { productsRouter } from "./router/productsRouter.js";
 import { cartRouter } from "./router/cartRouter.js";
 import { viewRouter } from "./router/viewsRouter.js";
-import { ProductManager } from "./controllers/product-manager.js";
+import { ProductManager } from "./controllers/products-manager.js";
+import { messageModel } from "./models/message.model.js";
+import { connectDb } from "./database.js";
+
+connectDb();
 
 const app = express();
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-const productManger = new ProductManager("./src/models/productos.json");
+const productManger = new ProductManager();
 
 // Middlewares
 app.use(express.json());
@@ -29,7 +33,10 @@ const io = new Server(httpServer);
 io.on("connection", async (socket) => {
   console.log("Nuevo cliente conectado!");
 
-  
+  // Get all products
+  socket.emit("allProducts", await productManger.getProducts());
+
+  // Add product
 
   socket.on("new-product", async (data) => {
     console.log(data);
@@ -43,8 +50,9 @@ io.on("connection", async (socket) => {
     } catch (error) {
       console.log(error);
     }
-  })
+  });
 
+  // Delete product
   socket.on("delete-product", async (id) => {
     try {
       await productManger.deleteProduct(id);
@@ -53,7 +61,14 @@ io.on("connection", async (socket) => {
     }
   });
 
-  socket.emit("allProducts", await productManger.getProducts());
+  // Chat
+  socket.on("message", async (data) => {
+    await messageModel.create(data);
+
+    const messages = await messageModel.find({}).lean();
+
+    io.emit("messageLogs", messages);
+  });
 });
 
 // handlebars setup

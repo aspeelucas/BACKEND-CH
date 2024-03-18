@@ -89,23 +89,3 @@ class Cart {
 }
 
 
-// TESTING CART MANAGER
-
-// const main = async () => {
-//   // TEST  si quiere probar el funcionamiento desmarque los console.log profesor.
-
-//   // Crea objetos utilizando la clase product .
-
-//   const Cartt = new Cart([]);
-
-//   // Metodos de la clase :
-
-//   const manager = new cartManager("./carrito.json");
-
-//   console.log("\nAgrega los productos al array de products y genera un id.\n");
-//   await manager.addCart(Cartt);
-
-//   console.log("\nDevuelve el array de productos.\n");
-//   await manager.getCart();
-// };
-// main();
