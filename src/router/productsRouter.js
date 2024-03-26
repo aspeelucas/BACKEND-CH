@@ -7,11 +7,8 @@ export const productsRouter = Router();
 
 productsRouter.get("/", async (req, res) => {
   try {
-    const { limit } = req.query;
-    const products = await productManger.getProducts();
-    if (limit) {
-      return res.json(products.slice(0, limit));
-    }
+    const { limit , page  } = req.query;
+    const products = await productManger.getProducts(limit,page);
     return res.json(products);
   } catch (error) {
     res.status(500).json({ error: "Error interno del servidor" });
@@ -89,3 +86,7 @@ productsRouter.delete("/:pid", async (req, res) => {
       .json({ error: "Error interno del servidor", reason: error.message });
   }
 });
+
+
+
+

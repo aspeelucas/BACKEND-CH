@@ -18,7 +18,7 @@ socket.on('allProducts',  (data) => {
         <p>Status : ${product.status} </p>
         <p>Id : ${product._id}</p>
         <button onclick=" 
-        socket.emit('delete-product', ${product._id})
+        socket.emit('delete-product', '${product._id}')
         ">Eliminar</button>
         </div>
         `

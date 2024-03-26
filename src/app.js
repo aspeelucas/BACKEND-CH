@@ -7,6 +7,7 @@ import { viewRouter } from "./router/viewsRouter.js";
 import { ProductManager } from "./controllers/products-manager.js";
 import { messageModel } from "./models/message.model.js";
 import { connectDb } from "./database.js";
+import Handlebars from "handlebars";
 
 connectDb();
 
@@ -16,6 +17,15 @@ const httpServer = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 const productManger = new ProductManager();
+const productDefault = async () => {
+    const products = await productManger.getProducts(999);
+    const productsFinal = products.docs.map((product) => {
+      const {...rest} = product.toObject();
+      return rest
+    });
+    return productsFinal;
+  }
+
 
 // Middlewares
 app.use(express.json());
@@ -27,6 +37,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
 app.use("/", viewRouter);
 
+
 // Socket.io
 const io = new Server(httpServer);
 
@@ -34,7 +45,7 @@ io.on("connection", async (socket) => {
   console.log("Nuevo cliente conectado!");
 
   // Get all products
-  socket.emit("allProducts", await productManger.getProducts());
+  socket.emit("allProducts", await productDefault());
 
   // Add product
 
@@ -47,15 +58,17 @@ io.on("connection", async (socket) => {
 
     try {
       await productManger.addProduct(data);
+      socket.emit("allProducts", await productDefault());
     } catch (error) {
       console.log(error);
     }
   });
 
   // Delete product
-  socket.on("delete-product", async (id) => {
+  socket.on("delete-product", async (_id) => {
     try {
-      await productManger.deleteProduct(id);
+      await productManger.deleteProduct(_id);
+      socket.emit("allProducts", await productDefault());
     } catch (error) {
       console.log(error);
     }
@@ -75,3 +88,12 @@ io.on("connection", async (socket) => {
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 app.set("views", "./src/views");
+Handlebars.registerHelper("if_eq", function (a, b, opts) {
+  if (a === b) {
+
+    return opts.fn(this);
+  } else {
+    return opts.inverse(this);
+  }
+
+});
