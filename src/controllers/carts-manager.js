@@ -58,4 +58,43 @@ export class CartManager {
       throw error;
     }
   }
+
+  async deleteProductFromCart(id, productId) {
+    try {
+      const cart = await this.getCart(id);
+      const productIndex = cart.products.findIndex(
+        (item) => item.product.toString() === productId
+      );
+
+      if (productIndex !== -1) {
+        cart.products.splice(productIndex, 1);
+        cart.markModified("products");
+        await cart.save();
+        console.log("Producto eliminado del carrito");
+        return cart;
+      } else {
+        console.log(
+          `El producto con el id ${productId} no existe en el carrito`
+        );
+        throw new Error(`Not Found`);
+      }
+    } catch (error) {
+      console.log(`Error al eliminar producto del carrito ${error}`);
+      throw error;
+    }
+  }
+
+  async deleteAllProductsFromCart(id) {
+    try {
+      const cart = await this.getCart(id);
+      cart.products = [];
+      cart.markModified("products");
+      await cart.save();
+      console.log("Todos los productos fueron eliminados del carrito");
+      return cart;
+    } catch (error) {
+      console.log(`Error al eliminar todos los productos del carrito ${error}`);
+      throw error;
+    }
+  }
 }

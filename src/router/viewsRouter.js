@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { ProductManager } from "../controllers/products-manager.js";
+import {CartManager} from "../controllers/carts-manager.js";
 
 const productManger = new ProductManager();
+const cartManager = new CartManager();
 
 export const viewRouter = Router();
 
@@ -80,3 +82,21 @@ viewRouter.get("/products", async (req, res) => {
     });
   } catch (error) {}
 });
+
+viewRouter.get("/carts/:cid", async (req, res) => {
+  const { cid } = req.params;
+  try {
+    const cart = await cartManager.getCart(cid);
+
+    res.render("cart", { cart: cart, fileCss: "cart.css" });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+    console.log("error al obtener carrito ", error);
+  }
+});
+
+// viewRouter.get("/checkout", async (req, res) => {
+
+//   res.render("checkout", { fileCss: "checkout.css" });
+// }
+// );
