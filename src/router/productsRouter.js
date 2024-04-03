@@ -7,11 +7,28 @@ export const productsRouter = Router();
 
 productsRouter.get("/", async (req, res) => {
   try {
-    const { limit , page  } = req.query;
-    const products = await productManger.getProducts(limit,page);
-    return res.json(products);
+    const { limit, page, sort, query } = req.query;
+    const products = await productManger.getProducts(limit, page, sort, query);
+    res.json({
+      status: "success",
+      payload: products,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      prevLink: products.hasPrevPage
+        ? `/api/products?limit=${limit}&page=${products.prevPage}&sort=${sort}&query=${query}`
+        : null,
+      nextLink: products.hasNextPage
+        ? `/api/products?limit=${limit}&page=${products.nextPage}&sort=${sort}&query=${query}`
+        : null,
+    });
   } catch (error) {
-    res.status(500).json({ error: "Error interno del servidor" });
+    res
+      .status(500)
+      .json({ status: "error", error: "Error interno del servidor" });
   }
 });
 
@@ -72,8 +89,6 @@ productsRouter.put("/:pid", async (req, res) => {
   }
 });
 
-
-
 productsRouter.delete("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
@@ -86,7 +101,3 @@ productsRouter.delete("/:pid", async (req, res) => {
       .json({ error: "Error interno del servidor", reason: error.message });
   }
 });
-
-
-
-

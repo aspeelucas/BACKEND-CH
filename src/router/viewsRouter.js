@@ -83,20 +83,40 @@ viewRouter.get("/products", async (req, res) => {
   } catch (error) {}
 });
 
-viewRouter.get("/carts/:cid", async (req, res) => {
-  const { cid } = req.params;
-  try {
-    const cart = await cartManager.getCart(cid);
+// viewRouter.get("/carts/:cid", async (req, res) => {
+//   const { cid } = req.params;
+//   try {
+//     const cart = await cartManager.getCart(cid);
 
-    res.render("cart", { cart: cart, fileCss: "cart.css" });
+//     res.render("cart", { cart: cart, fileCss: "cart.css" });
+//   } catch (error) {
+//     res.status(500).json({ error: "Error interno del servidor" });
+//     console.log("error al obtener carrito ", error);
+//   }
+// });
+
+
+viewRouter.get("/carts/:cid", async (req, res) => {
+  const cartId = req.params.cid;
+
+  try {
+     const carrito = await cartManager.getCart(cartId);
+
+     if (!carrito) {
+        console.log("No existe ese carrito con el id");
+        return res.status(404).json({ error: "Carrito no encontrado" });
+     }
+
+     const productosEnCarrito = carrito.products.map(item => ({
+        product: item.product.toObject(),
+        //Lo convertimos a objeto para pasar las restricciones de Exp Handlebars. 
+        quantity: item.quantity
+     }));
+
+
+     res.render("cart", { productos: productosEnCarrito , fileCss: "cart.css"});
   } catch (error) {
-    res.status(500).json({ error: "Error interno del servidor" });
-    console.log("error al obtener carrito ", error);
+     console.error("Error al obtener el carrito", error);
+     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
-
-// viewRouter.get("/checkout", async (req, res) => {
-
-//   res.render("checkout", { fileCss: "checkout.css" });
-// }
-// );

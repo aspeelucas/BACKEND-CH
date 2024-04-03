@@ -59,27 +59,44 @@ export class CartManager {
     }
   }
 
-  async deleteProductFromCart(id, productId) {
+  async udpateProductFromCart(cartId, updatedProducts) {
     try {
-      const cart = await this.getCart(id);
-      const productIndex = cart.products.findIndex(
-        (item) => item.product.toString() === productId
+      const cart = await cartModel.findById(cartId);
+
+      if (!cart) {
+        throw new Error("Carrito no encontrado");
+      }
+
+      cart.products = updatedProducts;
+
+      cart.markModified("products");
+
+      await cart.save();
+
+      return cart;
+    } catch (error) {
+      console.error("Error al actualizar el carrito en el gestor", error);
+      throw error;
+    }
+  }
+
+  async deleteProductFromCart(cartId, productId) {
+    try {
+      const cart = await cartModel.findById(cartId);
+
+      if (!cart) {
+        throw new Error("Carrito no encontrado");
+      }
+
+      cart.products = cart.products.filter(
+        (item) => item.product._id.toString() !== productId
       );
 
-      if (productIndex !== -1) {
-        cart.products.splice(productIndex, 1);
-        cart.markModified("products");
-        await cart.save();
-        console.log("Producto eliminado del carrito");
-        return cart;
-      } else {
-        console.log(
-          `El producto con el id ${productId} no existe en el carrito`
-        );
-        throw new Error(`Not Found`);
-      }
+      await cart.save();
+
+      return cart;
     } catch (error) {
-      console.log(`Error al eliminar producto del carrito ${error}`);
+      console.error("Error al eliminar el producto del carrito ", error);
       throw error;
     }
   }

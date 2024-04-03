@@ -16,47 +16,13 @@
     <div>
       <h1>Detalle Carrito</h1>
     </div>
-    {{!-- <div>
-    {{#each cart}}
-        <div>
-            <h2>Carrito: {{this._id}}</h2>
-            <ul>
-                {{#each this.products}}
-                    {{#each this}}
-                    <li>
-                        {{#each this.product}}
-                            <p>Nombre: {{this.title}}</p>
-                            <p>Precio: {{this.price}}</p>
-                            <p>Descripción: {{this.description}}</p>
-                            <p>Cantidad: {{../quantity}}</p>
-                        {{/each}}
-                    </li>
-                    {{/each}}
-                {{/each}}
-            </ul>
-        </div>
-    {{/each}}
-</div> --}}
 
-    {{!  }}
-
-    <div class="cartContent" >
-      {{#each cart}}
-        <p>{{this._id}}</p>
-        {{#each this.products}}
-          {{#each this}}
-            {{#each this.product}}
-              <p> {{this.title}}</p>
-              <p> {{this.price}}</p>
-              <p> {{this.description}}</p>
-
-            {{/each}}
-          {{/each}}
-
-        {{/each}}
-
-      {{/each}}
-    </div>
+    {{#each productos}}
+  <div>
+    <p>Producto: {{this.product.title}}</p>
+    <p>Cantidad: {{this.quantity}}</p>
+  </div>
+{{/each}}
 
      
 

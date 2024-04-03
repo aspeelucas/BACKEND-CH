@@ -34,17 +34,50 @@ cartRouter.post("/:cid/product/:pid", async (req, res) => {
   });
 });
 
+// Actualiza productos de un carrito
+
+cartRouter.put("/:cid", async (req, res) => {
+  const cartId = req.params.cid;
+  const updatedProducts = req.body;
+  try {
+    const updatedCart = await cartManager.udpateProductFromCart(
+      cartId,
+      updatedProducts
+    );
+    res.json(updatedCart);
+  } catch (error) {
+    console.error("Error al actualizar el carrito", error);
+    res.status(500).json({
+      status: "error",
+      error: "Error interno del servidor",
+    });
+  }
+});
+
 // Elimina un producto de un carrito
 
-
 cartRouter.delete("/:cid/product/:pid", async (req, res) => {
-  const { pid, cid } = req.params;
-  await cartManager.deleteProductFromCart(cid, pid);
-  const updatedCart = await cartManager.getCart(cid);
-  return res.json({
-    message: "El producto fue eliminado con exito",
-    updatedCart,
-  });
+  try {
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+
+    const updatedCart = await cartManager.deleteProductFromCart(
+      cartId,
+      productId
+    );
+
+    res.json({
+      status: "success",
+      message: "Producto eliminado del carrito correctamente",
+      updatedCart,
+    });
+  } catch (error) {
+    console.error("Error al eliminar el producto del carrito", error);
+    res.status(500).json({
+      status: "error",
+      error: "Error interno del servidor",
+    });
+  }
 });
 
 // Elimina todos los productos de un carrito
@@ -75,4 +108,3 @@ cartRouter.post("/", async (req, res) => {
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 });
-
