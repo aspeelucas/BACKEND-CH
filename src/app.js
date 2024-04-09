@@ -3,10 +3,13 @@ import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import { productsRouter } from "./router/productsRouter.js";
 import { cartRouter } from "./router/cartRouter.js";
+import { sessionsRouter } from "./router/sessionsRouter.js";
 import { viewRouter } from "./router/viewsRouter.js";
 import { ProductManager } from "./controllers/products-manager.js";
 import { messageModel } from "./models/message.model.js";
 import { connectDb } from "./database.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 import Handlebars from "handlebars";
 
 connectDb();
@@ -18,25 +21,36 @@ const httpServer = app.listen(PORT, () => {
 });
 const productManger = new ProductManager();
 const productDefault = async () => {
-    const products = await productManger.getProducts(999);
-    const productsFinal = products.docs.map((product) => {
-      const {...rest} = product.toObject();
-      return rest
-    });
-    return productsFinal;
-  }
-
+  const products = await productManger.getProducts(999);
+  const productsFinal = products.docs.map((product) => {
+    const { ...rest } = product.toObject();
+    return rest;
+  });
+  return productsFinal;
+};
 
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("./src/public"));
+app.use(
+  session({
+    secret: "secretCoder",
+    resave: true,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://aspeelucas:1D4amlIQuSpEfW4E@backend.iwzkkok.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=backend",
+      ttl: 100,
+    }),
+  })
+);
 
 // Routes
 app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/sessions", sessionsRouter);
 app.use("/", viewRouter);
-
 
 // Socket.io
 const io = new Server(httpServer);
@@ -90,10 +104,22 @@ app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 Handlebars.registerHelper("if_eq", function (a, b, opts) {
   if (a === b) {
-
     return opts.fn(this);
   } else {
     return opts.inverse(this);
   }
+});
 
+Handlebars.registerHelper("getUpdatedQuery", function (a, b, opts) {
+  const result = Object.entries(a)
+    .map((query) => {
+      if (query[0].includes(b)) {
+        return "";
+      }
+
+      return query.join("=");
+    })
+    .join("&");
+
+  return result;
 });

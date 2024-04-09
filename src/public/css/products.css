@@ -82,3 +82,37 @@
     align-items: center;
     gap: 10px;
 }
+
+.menuCollap{
+    display: flex;
+    justify-content: start;
+    align-items: start;
+}
+
+.menuCollap p {
+  
+    color: white;
+    text-align: center;
+}
+
+.menuCollap i{
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+}
+
+.containerLogOut{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+
+.textoRol{
+    margin: 0px;
+}
+
+.buttonLogOut{
+    font-size: 14px;
+   
+}
